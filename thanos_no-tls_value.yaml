@@ -1,0 +1,61 @@
+objstoreConfig: |-
+  type: s3
+  config:
+    bucket: thanos
+    endpoint: {{ include "thanos.minio.fullname" . }}.thanos.svc.cluster.local:9000
+    access_key: thanos_user
+    secret_key: lpo7MQcclf
+    insecure: true
+query:
+  stores:
+    - 159.223.113.155:42131  
+  args:
+      - --grpc-server-tls-client-ca=~/secrets/server1-cert.crt
+      - --grpc-server-tls-key=~/secrets/key-server1-key.crt
+      - --grpc-server-tls-cert=~/secrets/ca-server1.crt  
+  grpc:
+    server:
+      tls:
+        enabled: false
+        #cert: ~/secrets/cert-client-key.crt
+        #key: ~/secrets/key-client-key.crt
+        #ca: ~/secrets/ca-client-key.crt
+        #existingSecret:
+        # name: peter-config-tbd
+        # keyMapping:
+        #   ca-cert: ca-server1.crt
+        #   tls-cert: server1-cert.crt
+        #   tls-key: key-server1-keyty.crt
+
+bucketweb:
+  enabled: true
+  persistence:
+    enabled: false
+compactor:
+  enabled: true
+  persistence:
+    enabled: false
+storegateway:
+  enabled: true
+  persistence:
+    enabled: false
+ruler:
+  enabled: true
+  persistence:
+    enabled: false
+  alertmanagers:
+    - http://prometheus-operator-alertmanager.thanos.svc.cluster.local:9093
+  config: |-
+    groups:
+      - name: "metamonitoring"
+        rules:
+          - alert: "PrometheusDown"
+            expr: absent(up{prometheus="monitoring/prometheus-operator"})
+minio:
+  enabled: true
+  auth:
+    rootUser: "thanos_user"
+    rootPassword: "lpo7MQcclf"
+  persistence:
+    enabled: false
+  defaultBuckets: "thanos"
