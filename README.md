@@ -5,7 +5,7 @@
 ### No tls Setup :
 - Install the Prometheus Operator on each data producer
 
-```helm install prometheus-operator   --set prometheus.thanos.create=true   --set operator.service.type=ClusterIP   --set prometheus.service.type=ClusterIP   --set alertmanager.service.type=ClusterIP   --set prometheus.thanos.service.type=NodePort --set node-exporter.hostNetwork=false  --set prometheus.externalLabels.cluster=“kube-codescalers-01”   bitnami/kube-prometheus --namespace monitoring --create-namespace```
+```helm install prometheus-operator   --set prometheus.thanos.create=true   --set operator.service.type=ClusterIP   --set prometheus.service.type=ClusterIP   --set alertmanager.service.type=ClusterIP   --set prometheus.thanos.service.type=NodePort --set node-exporter.hostNetwork=false  --set prometheus.externalLabels.cluster="kube-codescalers-01"   bitnami/kube-prometheus --namespace monitoring --create-namespace```
 
 use this command to get the public ip:port of thanos operator 
 
@@ -15,7 +15,7 @@ if that command didn't work, check network service, pod prometheus-operator-kube
 
 - Install and configure Thanos on data aggregator cluster
 
-```helm install thanos bitnami/thanos --values thanos_no-tls_value.yaml --namespace thanos --create-namespace```
+```helm install thanos bitnami/thanos --values thanos_query_value.yaml --namespace thanos --create-namespace```
 
 
 - Install Grafana
@@ -49,4 +49,4 @@ use that link in prometheus datasource http://thanos-query.thanos.svc.cluster.lo
 
 - ```kubectl create secret generic peter-config-tbd --from-file=ca.crt=ca.key --from-file=server1-key.crt=server1.key --from-file=server1-cert.crt=server1.pem -n thanos```
 
-- ```helm install thanos bitnami/thanos --values thanos_query_value.yaml --namespace thanos --create-namespace```
+- ```helm install thanos bitnami/thanos --values thanos_mutula-tls_value.yaml --namespace thanos --create-namespace```
